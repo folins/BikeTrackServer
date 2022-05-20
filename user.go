@@ -5,5 +5,5 @@ type User struct {
 	Name     string `json:"name"`
 	Email string `json:"email" binding:"required"`
 	Password string `json:"password"`
-	ConfirmCode int `json:"confirm_code"`
+	ConfirmCode int `json:"confirm_code" db:"confirm_code"`
 }

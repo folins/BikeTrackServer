@@ -31,7 +31,7 @@ func NewSMTPService(email, password, host string, port int) *SMTPService {
 	}
 }
 
-func (_smtp *SMTPService) SendConfirmCode(user biketrackserver.User, code int) error {
+func (_smtp *SMTPService) SendConfirmCode(user biketrackserver.User) error {
 
 	to := user.Email
 
@@ -39,7 +39,7 @@ func (_smtp *SMTPService) SendConfirmCode(user biketrackserver.User, code int) e
 
 	data := EmailContains{
 		Name: user.Name,
-		Code: code,
+		Code: user.ConfirmCode,
 	}
 
 	tmpl, err := template.ParseFiles("./templates/register_email.html")
@@ -61,7 +61,6 @@ func (_smtp *SMTPService) SendConfirmCode(user biketrackserver.User, code int) e
 	m.SetBody("text/html", body.String())
 
 	d := gomail.NewDialer(_smtp.SmtpHost, _smtp.SmtpPort, _smtp.SenderEmail, _smtp.Password)
-	logrus.Debugf("host: %s, port: %d, smail: %s, pass: %s", _smtp.SmtpHost, _smtp.SmtpPort, _smtp.SenderEmail, _smtp.Password)
 
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 

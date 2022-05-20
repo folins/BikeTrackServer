@@ -4,6 +4,7 @@ import (
 	"crypto/sha1"
 	"errors"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -31,7 +32,9 @@ func NewAuthService(repos repository.Authorization) *AuthService {
 }
 
 func (s *AuthService) CreateUser(user biketrackserver.User) (int, error) {
-	user.Password = generatePasswordHash(user.Password)
+	strCode := strconv.Itoa(user.ConfirmCode)
+	user.Password = generatePasswordHash(strCode)
+
 	return s.repos.CreateUser(user)
 }
 
@@ -70,19 +73,6 @@ func (s *AuthService) ParseToken(accessToken string) (int, error) {
 	}
 
 	return claims.UserId, nil
-}
-
-func (s *AuthService) CreateTempUser(email string, code int) (int, error) {
-	return s.repos.CreateTempUser(email , code)
-}
-
-func (s *AuthService) VerifyConfirmCode(email string, code int) (bool, error) {
-	_, err := s.repos.GetTempUser(email, code)
-	if err != nil {
-		return false, err
-	}
-
-	return true, nil
 }
 
 func generatePasswordHash(password string) string {

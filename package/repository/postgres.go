@@ -7,7 +7,7 @@ import (
 	
 const (
 	usersTable = "users"
-	tempUsersTable = "temp_users"
+	bikeTripsTable = "trips"
 )
 
 

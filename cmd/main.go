@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"time"
 
 	"github.com/folins/biketrackserver"
 	"github.com/folins/biketrackserver/package/handler"
@@ -23,6 +24,8 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		logrus.Fatalf("error loading env variables: %s", err.Error())
 	}
+
+	logrus.Debugf("Server start time: %s", time.Now())
 
 	db, err := repository.NewPostgreDB(repository.Config{
 		Host:     viper.GetString("db.host"),
