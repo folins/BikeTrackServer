@@ -35,7 +35,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			{
 				points.POST("/", h.createPoint)
 				points.GET("/", h.getAllPoints)
-				points.GET("/:point_id", h.getAllPoints)
+				points.GET("/:point_id", h.getPointById)
 			}
 		}
 	}
