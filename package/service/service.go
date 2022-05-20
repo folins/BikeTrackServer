@@ -22,9 +22,17 @@ type BikeTrip interface {
 	Delete(userId, tripId int) error
 }
 
+type TripPoint interface {
+	Create(userId, tripId int, point biketrackserver.TripPoint) (int, error)
+	GetAll(userId, tripId int) ([]biketrackserver.TripPoint, error)
+	GetById(userId, tripId, pointId int) (biketrackserver.TripPoint, error)
+	// Delete(userId, tripPointId int) error
+}
+
 type Service struct {
 	Authorization
 	BikeTrip
+	TripPoint
 	SMTP
 }
 
@@ -32,6 +40,7 @@ func NewService(repos *repository.Repository, smtp *SMTPService) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos.Authorization),
 		BikeTrip: NewBikeTripService(repos.BikeTrip),
+		TripPoint: NewTripPointService(repos.TripPoint, repos.BikeTrip),
 		SMTP: smtp,
 	}
 }

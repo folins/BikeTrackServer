@@ -8,6 +8,7 @@ import (
 const (
 	usersTable = "users"
 	bikeTripsTable = "trips"
+	tripPointsTable = "trip_points"
 )
 
 

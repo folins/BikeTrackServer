@@ -20,7 +20,7 @@ type TripPoint struct {
 	Id int    `json:"id" db:"id"`
     Latitude float64 `json:"latitude" db:"latitude"`
     Longitude float64 `json:"longitude" db:"longitude"`
-    Date time.Time `json:"date" db:"date"`
+    Date time.Time `json:"date" db:"point_date"`
     Speed float32 `json:"speed" db:"speed"`
     // TripId int64 `json:"active_duration" db:"trip_id"`
 }

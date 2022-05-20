@@ -42,14 +42,14 @@ func (h *Handler) getAllTrips(c *gin.Context) {
 		return
 	}
 
-	lists, err := h.services.BikeTrip.GetAll(userId)
+	trips, err := h.services.BikeTrip.GetAll(userId)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	c.JSON(http.StatusOK, getAllTripsResponse{
-		Data: lists,
+		Data: trips,
 	})
 }
 

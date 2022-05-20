@@ -21,7 +21,7 @@ CREATE TABLE trip_points (
 	id serial not null unique,
     latitude double precision,
     longitude double precision,
-    date timestamp with time zone,
+    point_date timestamp with time zone,
     speed real,
     trip_id int references trips(id) on delete cascade not null
 );

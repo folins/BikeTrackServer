@@ -17,10 +17,16 @@ type BikeTrip interface {
 	Delete(userId, tripId int) error
 }
 
+type TripPoint interface {
+	Create(tripId int, trip biketrackserver.TripPoint) (int, error)
+	GetAll(tripId int) ([]biketrackserver.TripPoint, error)
+	GetById(tripId, pointId int) (biketrackserver.TripPoint, error)
+}
 
 type Repository struct {
 	Authorization
 	BikeTrip
+	TripPoint
 }
 
 
@@ -28,5 +34,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		Authorization: NewAuthPosgres(db),
 		BikeTrip: NewBikeTripPostgres(db),
+		TripPoint: NewTripPointPostgres(db),
 	}
 }
