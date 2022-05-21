@@ -21,11 +21,9 @@ func main() {
 		logrus.Fatalf("error init configs: %s", err.Error())
 	}
 
-	if err := godotenv.Load(); err != nil {
-		logrus.Fatalf("error loading env variables: %s", err.Error())
-	}
-
-	logrus.Debugf("Server start time: %s", time.Now())
+	// if err := godotenv.Load(); err != nil {
+	// 	logrus.Fatalf("error loading env variables: %s", err.Error())
+	// }
 
 	// db, err := repository.NewPostgreDB(repository.Config{
 	// 	Host:     viper.GetString("db.host"),
