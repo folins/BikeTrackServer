@@ -2,13 +2,11 @@ package main
 
 import (
 	"os"
-	"time"
 
 	"github.com/folins/biketrackserver"
 	"github.com/folins/biketrackserver/package/handler"
 	"github.com/folins/biketrackserver/package/repository"
 	"github.com/folins/biketrackserver/package/service"
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
