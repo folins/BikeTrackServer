@@ -36,3 +36,18 @@ func NewPostgreDB(cfg Config) (*sqlx.DB, error) {
 
 	return db, nil
 }
+
+func NewHerokuDB(databaseURL string) (*sqlx.DB, error) {
+	db, err := sqlx.Open("postgres", databaseURL)
+
+	if err != nil {
+		return nil, err
+	}
+	
+	err = db.Ping()
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
+}

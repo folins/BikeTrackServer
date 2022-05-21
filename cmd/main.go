@@ -27,14 +27,16 @@ func main() {
 
 	logrus.Debugf("Server start time: %s", time.Now())
 
-	db, err := repository.NewPostgreDB(repository.Config{
-		Host:     viper.GetString("db.host"),
-		Port:     viper.GetString("db.port"),
-		Username: viper.GetString("db.username"),
-		DBNmae:   viper.GetString("db.dbname"),
-		SSLMode:  viper.GetString("db.sslmode"),
-		Password: os.Getenv("DB_PASSWORD"),
-	})
+	// db, err := repository.NewPostgreDB(repository.Config{
+	// 	Host:     viper.GetString("db.host"),
+	// 	Port:     viper.GetString("db.port"),
+	// 	Username: viper.GetString("db.username"),
+	// 	DBNmae:   viper.GetString("db.dbname"),
+	// 	SSLMode:  viper.GetString("db.sslmode"),
+	// 	Password: os.Getenv("DB_PASSWORD"),
+	// })
+
+	db, err := repository.NewHerokuDB(os.Getenv("DATABASE_URL"))
 
 	if err != nil {
 		logrus.Fatalf("failed to init database: %s", err.Error())
@@ -52,7 +54,7 @@ func main() {
 	handlers := handler.NewHandler(service)
 	srv := new(biketrackserver.Server)
 
-	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
+	if err := srv.Run(os.Getenv("PORT"), handlers.InitRoutes()); err != nil {
 		logrus.Fatalf("Error occured while running server: %s", err.Error())
 	}
 }
