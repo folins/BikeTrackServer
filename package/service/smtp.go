@@ -71,3 +71,43 @@ func (_smtp *SMTPService) SendConfirmCode(user biketrackserver.User) error {
 
 	return nil
 }
+
+func (_smtp *SMTPService) SendResetCode(email string, code int) error {
+
+	to := email
+
+	var body bytes.Buffer
+
+	data := EmailContains{
+		Code: code,
+	}
+
+	tmpl, err := template.ParseFiles("./templates/reset_email.html")
+	if err != nil {
+		logrus.Fatalf("Error occured while parsing template: %s", err.Error())
+		return err
+	}
+
+	if err := tmpl.Execute(&body, data); err != nil {
+		logrus.Fatalf("Error occured while executing template: %s", err.Error())
+		return err
+	}
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", _smtp.SenderEmail)
+	m.SetHeader("To", to)
+	m.SetHeader("Subject", "Код відновлення паролю")
+
+	m.SetBody("text/html", body.String())
+
+	d := gomail.NewDialer(_smtp.SmtpHost, _smtp.SmtpPort, _smtp.SenderEmail, _smtp.Password)
+
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+
+	if err := d.DialAndSend(m); err != nil {
+		logrus.Fatalf("Error occured when send email: %s", err.Error())
+		return err
+	}
+
+	return nil
+}

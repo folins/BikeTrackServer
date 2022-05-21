@@ -5,14 +5,20 @@ import (
 	"github.com/folins/biketrackserver/package/repository"
 )
 
-type Authorization interface {
-	CreateUser(user biketrackserver.User) (int, error)
+type User interface {
+	Create(user biketrackserver.User) (int, error)
+	GetIdByEmail(email string) (int, error)
 	GenerateToken(email, password string) (string, error)
 	ParseToken(token string) (int, error)
+	Update(userId int, input biketrackserver.UserUpdateInput) error
+	CheckPassword(userId int, password string) error
+	CheckConfirmCode(email string, code int) error
+	SetPassword(email, password string, code int) error
 }
 
 type SMTP interface {
 	SendConfirmCode(user biketrackserver.User) error
+	SendResetCode(email string, code int) error
 }
 
 type BikeTrip interface {
@@ -30,7 +36,7 @@ type TripPoint interface {
 }
 
 type Service struct {
-	Authorization
+	User
 	BikeTrip
 	TripPoint
 	SMTP
@@ -38,9 +44,9 @@ type Service struct {
 
 func NewService(repos *repository.Repository, smtp *SMTPService) *Service {
 	return &Service{
-		Authorization: NewAuthService(repos.Authorization),
-		BikeTrip: NewBikeTripService(repos.BikeTrip),
+		User:      NewUserService(repos.User),
+		BikeTrip:  NewBikeTripService(repos.BikeTrip),
 		TripPoint: NewTripPointService(repos.TripPoint, repos.BikeTrip),
-		SMTP: smtp,
+		SMTP:      smtp,
 	}
 }

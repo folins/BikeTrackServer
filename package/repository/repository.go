@@ -5,9 +5,14 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-type Authorization interface {
-	CreateUser(user biketrackserver.User) (int, error)
-	GetUser(email, password string) (biketrackserver.User, error)
+type User interface {
+	Create(user biketrackserver.User) (int, error)
+	Get(email, password string) (biketrackserver.User, error)
+	GetIdByEmail(email string) (int, error)
+	GetIdByEmailAndConfirmCode(email string, code int) (int, error)
+	Update(userId int, input biketrackserver.UserUpdateInput) error
+	CheckPassword(userId int, password string) error
+	CheckConfirmCode(email string, code int) error
 }
 
 type BikeTrip interface {
@@ -24,7 +29,7 @@ type TripPoint interface {
 }
 
 type Repository struct {
-	Authorization
+	User
 	BikeTrip
 	TripPoint
 }
@@ -32,7 +37,7 @@ type Repository struct {
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
-		Authorization: NewAuthPosgres(db),
+		User: NewUserPosgres(db),
 		BikeTrip: NewBikeTripPostgres(db),
 		TripPoint: NewTripPointPostgres(db),
 	}
