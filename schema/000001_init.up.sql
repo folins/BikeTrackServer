@@ -3,7 +3,8 @@ CREATE TABLE users (
     name varchar(255),
     email varchar(255) not null unique,
     password_hash varchar(255) not null,
-    confirm_code int
+    confirm_code int,
+    registered boolean
 );
 
 CREATE TABLE trips (

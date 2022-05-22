@@ -37,6 +37,7 @@ func (s *UserService) Create(email string, code int) (int, error) {
 	strCode := strconv.Itoa(newUser.ConfirmCode)
 	newUser.Password = generatePasswordHash(strCode)
 	newUser.ConfirmCode = code
+	newUser.IsRegistered = false
 
 	return s.repos.Create(newUser)
 }
@@ -61,7 +62,6 @@ func (s *UserService) GenerateToken(email, password string) (string, error) {
 
 	return token.SignedString([]byte(signinKey))
 }
-
 
 func (s *UserService) ParseToken(accessToken string) (int, error) {
 	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
@@ -95,7 +95,12 @@ func (s *UserService) CheckPassword(userId int, password string) error {
 }
 
 func (s *UserService) CheckConfirmCode(email string, code int) error {
-	_, err := s.repos.GetIdByEmailAndConfirmCode(email, code)
+	id, err := s.repos.GetIdByEmailAndConfirmCode(email, code)
+	if err == nil {
+		var user biketrackserver.UserUpdateInput
+		*user.IsRegistered = true
+		s.repos.Update(id, user)
+	}
 	return err
 }
 

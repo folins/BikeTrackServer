@@ -19,8 +19,8 @@ func NewUserPosgres(db *sqlx.DB) *UserPostgres {
 
 func (r *UserPostgres) Create(user biketrackserver.User) (int, error) {
 	var id int
-	query := fmt.Sprintf("INSERT INTO %s (name, email, password_hash, confirm_code) values ($1, $2, $3, $4) RETURNING id", usersTable)
-	row := r.db.QueryRow(query, user.Name, user.Email, user.Password, user.ConfirmCode)
+	query := fmt.Sprintf("INSERT INTO %s (name, email, password_hash, confirm_code, registered) values ($1, $2, $3, $4, $5) RETURNING id", usersTable)
+	row := r.db.QueryRow(query, user.Name, user.Email, user.Password, user.ConfirmCode, user.IsRegistered)
 	if err := row.Scan(&id); err != nil {
 		return 0, err
 	}
@@ -45,7 +45,7 @@ func (r *UserPostgres) CheckConfirmCode(email string, code int) error {
 
 func (r *UserPostgres) GetIdByEmail(email string) (int, error) {
 	var id int
-	query := fmt.Sprintf("SELECT id FROM %s WHERE email=$1", usersTable)
+	query := fmt.Sprintf("SELECT id FROM %s WHERE email=$1 AND registered = true", usersTable)
 	err := r.db.Get(&id, query, email)
 
 	return id, err
@@ -55,9 +55,6 @@ func (r *UserPostgres) GetIdByEmailAndConfirmCode(email string, code int) (int, 
 	var id int
 	query := fmt.Sprintf("SELECT id FROM %s WHERE email = $1 AND confirm_code = $2", usersTable)
 	err := r.db.Get(&id, query, email, code)
-	if err != nil {
-		return 0, err
-	}
 
 	return id, err
 }
@@ -95,6 +92,12 @@ func (r *UserPostgres) Update(userId int, input biketrackserver.UserUpdateInput)
 	if input.ConfirmCode != nil {
 		setValues = append(setValues, fmt.Sprintf("confirm_code=$%d", argId))
 		args = append(args, *input.ConfirmCode)
+		argId++
+	}
+
+	if input.IsRegistered != nil {
+		setValues = append(setValues, fmt.Sprintf("registered=$%d", argId))
+		args = append(args, *input.IsRegistered)
 		argId++
 	}
 
