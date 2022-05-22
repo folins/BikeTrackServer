@@ -6,7 +6,7 @@ import (
 )
 
 type User interface {
-	Create(user biketrackserver.User) (int, error)
+	Create(email string, code int) (int, error)
 	GetIdByEmail(email string) (int, error)
 	GenerateToken(email, password string) (string, error)
 	ParseToken(token string) (int, error)
@@ -18,7 +18,7 @@ type User interface {
 }
 
 type SMTP interface {
-	SendConfirmCode(user biketrackserver.User) error
+	SendConfirmCode(email string, code int) error
 	SendResetCode(email string, code int) error
 }
 

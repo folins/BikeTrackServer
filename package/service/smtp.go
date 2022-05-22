@@ -5,7 +5,6 @@ import (
 	"crypto/tls"
 	"text/template"
 
-	"github.com/folins/biketrackserver"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/gomail.v2"
 )
@@ -31,15 +30,12 @@ func NewSMTPService(email, password, host string, port int) *SMTPService {
 	}
 }
 
-func (_smtp *SMTPService) SendConfirmCode(user biketrackserver.User) error {
-
-	to := user.Email
+func (_smtp *SMTPService) SendConfirmCode(email string, code int) error {
 
 	var body bytes.Buffer
 
 	data := EmailContains{
-		Name: user.Name,
-		Code: user.ConfirmCode,
+		Code: code,
 	}
 
 	tmpl, err := template.ParseFiles("./templates/register_email.html")
@@ -55,7 +51,7 @@ func (_smtp *SMTPService) SendConfirmCode(user biketrackserver.User) error {
 
 	m := gomail.NewMessage()
 	m.SetHeader("From", _smtp.SenderEmail)
-	m.SetHeader("To", to)
+	m.SetHeader("To", email)
 	m.SetHeader("Subject", "Дякуємо за реєстрацію!")
 
 	m.SetBody("text/html", body.String())

@@ -12,8 +12,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+type emailInput struct {
+	Email string `json:"email" binding:"required"`
+}
+
 func (h *Handler) signUp(c *gin.Context) {
-	var input biketrackserver.User
+	var input emailInput
 
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
@@ -21,15 +25,14 @@ func (h *Handler) signUp(c *gin.Context) {
 	}
 	rand.Seed(time.Now().Unix())
 	code := 100000 + rand.Intn(999999-100000)
-	input.ConfirmCode = code
 
-	id, err := h.services.User.Create(input)
+	id, err := h.services.User.Create(input.Email, code)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	h.services.SMTP.SendConfirmCode(input)
+	h.services.SMTP.SendConfirmCode(input.Email, code)
 
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"id": id,
@@ -58,10 +61,6 @@ func (h *Handler) signIn(c *gin.Context) {
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"token": token,
 	})
-}
-
-type emailInput struct {
-	Email string `json:"email" binding:"required"`
 }
 
 func (h *Handler) resetPassword(c *gin.Context) {
