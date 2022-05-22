@@ -96,6 +96,17 @@ func (s *UserService) CheckConfirmCode(email string, code int) error {
 	return err
 }
 
+func (s *UserService) CheckEmailExistence(email string) (bool, error) {
+	_, err := s.repos.GetIdByEmail(email)
+	if err != nil {
+		if err.Error() == "sql: no rows in result set" {
+			return false, nil
+		}
+		return false, err
+	}
+	return true, nil
+}
+
 func (s *UserService) SetPassword(email, password string, code int) error {
 	id, err := s.repos.GetIdByEmailAndConfirmCode(email, code)
 	if err != nil {

@@ -14,6 +14,7 @@ type User interface {
 	CheckPassword(userId int, password string) error
 	CheckConfirmCode(email string, code int) error
 	SetPassword(email, password string, code int) error
+	CheckEmailExistence(email string) (bool, error)
 }
 
 type SMTP interface {

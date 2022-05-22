@@ -4,6 +4,7 @@ import (
 	"errors"
 	"math/rand"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/folins/biketrackserver"
@@ -59,12 +60,12 @@ func (h *Handler) signIn(c *gin.Context) {
 	})
 }
 
-type resetPasswordInput struct {
+type emailInput struct {
 	Email string `json:"email" binding:"required"`
 }
 
 func (h *Handler) resetPassword(c *gin.Context) {
-	var input resetPasswordInput
+	var input emailInput
 	var newDetails biketrackserver.UserUpdateInput
 
 	if err := c.BindJSON(&input); err != nil {
@@ -162,6 +163,26 @@ func (h *Handler) verifyCode(c *gin.Context) {
 
 	c.JSON(http.StatusOK, statusResponse{
 		Status: "ok",
+	})
+}
+
+func (h *Handler) checkEmailExistence(c *gin.Context) {
+	var input emailInput
+	if err := c.BindJSON(&input); err != nil {
+		logrus.WithField("handler", "checkEmailExistence").Errorf("Failed to bind sign in structure: %s\n", err.Error())
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	result, err := h.services.User.CheckEmailExistence(input.Email)
+	if err != nil {
+		logrus.WithField("handler", "checkEmailExistence").Errorf("Failed to get sql query: %s\n", err.Error())
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, statusResponse{
+		Status: strconv.FormatBool(result),
 	})
 }
 

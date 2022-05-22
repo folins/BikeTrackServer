@@ -22,6 +22,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		auth.POST("/sign-in", h.signIn)
 		auth.POST("/reset-password", h.resetPassword)
 		auth.POST("/verify-confirmcode", h.verifyCode)
+		auth.POST("/check-email-existence", h.checkEmailExistence)
 		auth.PUT("/set-password", h.setPassword)
 		auth.PUT("/change-password", h.changePassword)
 	}
