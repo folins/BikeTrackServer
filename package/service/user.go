@@ -4,6 +4,7 @@ import (
 	"crypto/sha1"
 	"errors"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -33,6 +34,8 @@ func NewUserService(repos repository.User) *UserService {
 func (s *UserService) Create(email string, code int) (int, error) {
 	var newUser biketrackserver.User
 	newUser.Email = email
+	strCode := strconv.Itoa(newUser.ConfirmCode)
+	newUser.Password = generatePasswordHash(strCode)
 	newUser.ConfirmCode = code
 
 	return s.repos.Create(newUser)

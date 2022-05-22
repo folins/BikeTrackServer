@@ -55,6 +55,9 @@ func (r *UserPostgres) GetIdByEmailAndConfirmCode(email string, code int) (int, 
 	var id int
 	query := fmt.Sprintf("SELECT id FROM %s WHERE email = $1 AND confirm_code = $2", usersTable)
 	err := r.db.Get(&id, query, email, code)
+	if err != nil {
+		return 0, err
+	}
 
 	return id, err
 }
