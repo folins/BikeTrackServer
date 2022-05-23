@@ -105,12 +105,7 @@ func (s *UserService) CheckPassword(userId int, password string) error {
 }
 
 func (s *UserService) CheckConfirmCode(email string, code int) error {
-	id, err := s.repos.GetIdByEmailAndConfirmCode(email, code)
-	if err == nil {
-		var user biketrackserver.UserUpdateInput
-		*user.IsRegistered = true
-		s.repos.Update(id, user)
-	}
+	_, err := s.repos.GetIdByEmailAndConfirmCode(email, code)
 	return err
 }
 
