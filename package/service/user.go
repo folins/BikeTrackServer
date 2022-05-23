@@ -45,7 +45,7 @@ func (s *UserService) Create(email string, code int) (int, error) {
 
 	if user.IsRegistered == false {
 		var inputUser biketrackserver.UserUpdateInput
-		*inputUser.ConfirmCode = code
+		inputUser.ConfirmCode = &code
 		return 0, s.repos.Update(user.Id, inputUser)
 	}
 
