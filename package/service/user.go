@@ -129,8 +129,10 @@ func (s *UserService) SetPassword(email, password string, code int) error {
 	var input biketrackserver.UserUpdateInput
 	passwordHash := generatePasswordHash(password)
 	input.Password = &passwordHash
-	*input.ConfirmCode = 0
-	*input.IsRegistered = true
+	resetCode := 0
+	rigister := true
+	input.ConfirmCode = &resetCode
+	input.IsRegistered = &rigister
 
 	return s.repos.Update(id, input)
 }
