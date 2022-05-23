@@ -207,7 +207,7 @@ func (h *Handler) setPassword(c *gin.Context) {
 	}
 
 	if err := h.services.User.SetPassword(input.Email, input.Password, input.Code); err != nil {
-		logrus.WithField("handler", "setPassword").Errorf("Wrong user confirm code: %s\n", err.Error())
+		logrus.WithField("handler", "setPassword").Errorf("Wrong user password set: %s\n", err.Error())
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}

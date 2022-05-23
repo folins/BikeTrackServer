@@ -49,8 +49,16 @@ func (r *UserPostgres) GetIdByEmail(email string) (int, error) {
 	err := r.db.Get(&id, query, email)
 
 	return id, err
-
 }
+
+func (r *UserPostgres) GetUserByEmail(email string) (biketrackserver.User, error) {
+	var user biketrackserver.User
+	query := fmt.Sprintf("SELECT * FROM %s WHERE email=$1", usersTable)
+	err := r.db.Get(&user, query, email)
+
+	return user, err
+}
+
 func (r *UserPostgres) GetIdByEmailAndConfirmCode(email string, code int) (int, error) {
 	var id int
 	query := fmt.Sprintf("SELECT id FROM %s WHERE email = $1 AND confirm_code = $2", usersTable)

@@ -9,6 +9,7 @@ type User interface {
 	Create(user biketrackserver.User) (int, error)
 	Get(email, password string) (biketrackserver.User, error)
 	GetIdByEmail(email string) (int, error)
+	GetUserByEmail(email string) (biketrackserver.User, error)
 	GetIdByEmailAndConfirmCode(email string, code int) (int, error)
 	Update(userId int, input biketrackserver.UserUpdateInput) error
 	CheckPassword(userId int, password string) error

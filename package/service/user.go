@@ -32,14 +32,30 @@ func NewUserService(repos repository.User) *UserService {
 }
 
 func (s *UserService) Create(email string, code int) (int, error) {
-	var newUser biketrackserver.User
-	newUser.Email = email
-	strCode := strconv.Itoa(newUser.ConfirmCode)
-	newUser.Password = generatePasswordHash(strCode)
-	newUser.ConfirmCode = code
-	newUser.IsRegistered = false
 
-	return s.repos.Create(newUser)
+	user, err := s.repos.GetUserByEmail(email)
+	if err != nil {
+		if err.Error() == "sql: no rows in result set" {
+			var inputUser biketrackserver.User
+			strCode := strconv.Itoa(inputUser.ConfirmCode)
+			inputUser.Password = generatePasswordHash(strCode)
+			inputUser.ConfirmCode = code
+			inputUser.Email = email
+			inputUser.IsRegistered = false
+			return s.repos.Create(inputUser)
+		}
+	}
+
+	if user.IsRegistered == false {
+		var inputUser biketrackserver.UserUpdateInput
+		strCode := strconv.Itoa(*inputUser.ConfirmCode)
+		*inputUser.Password = generatePasswordHash(strCode)
+		*inputUser.ConfirmCode = code
+		*inputUser.Email = email
+		return 0, s.repos.Update(user.Id, inputUser)
+	}
+
+	return 0, errors.New("Server error")
 }
 
 func (s *UserService) GetIdByEmail(email string) (int, error) {
@@ -124,6 +140,8 @@ func (s *UserService) SetPassword(email, password string, code int) error {
 	var input biketrackserver.UserUpdateInput
 	passwordHash := generatePasswordHash(password)
 	input.Password = &passwordHash
+	*input.ConfirmCode = 0
+	*input.IsRegistered = true
 
 	return s.repos.Update(id, input)
 }
