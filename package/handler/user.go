@@ -187,8 +187,8 @@ func (h *Handler) checkEmailExistence(c *gin.Context) {
 
 type setPasswordInput struct {
 	Email string `json:"email" binding:"required"`
-	Code int `json:"confirm_code" binding:"required"`
 	Password string `json:"password" binding:"required"`
+	Code int `json:"confirm_code" binding:"required"`
 }
 
 func (h *Handler) setPassword(c *gin.Context) {

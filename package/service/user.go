@@ -37,7 +37,7 @@ func (s *UserService) Create(email string, code int) (int, error) {
 	if err != nil {
 		if err.Error() == "sql: no rows in result set" {
 			var inputUser biketrackserver.User
-			strCode := strconv.Itoa(inputUser.ConfirmCode)
+			strCode := strconv.Itoa(code)
 			inputUser.Password = generatePasswordHash(strCode)
 			inputUser.ConfirmCode = code
 			inputUser.Email = email
@@ -48,7 +48,7 @@ func (s *UserService) Create(email string, code int) (int, error) {
 
 	if user.IsRegistered == false {
 		var inputUser biketrackserver.UserUpdateInput
-		strCode := strconv.Itoa(*inputUser.ConfirmCode)
+		strCode := strconv.Itoa(code)
 		*inputUser.Password = generatePasswordHash(strCode)
 		*inputUser.ConfirmCode = code
 		*inputUser.Email = email
