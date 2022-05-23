@@ -49,7 +49,8 @@ func (s *UserService) Create(email string, code int) (int, error) {
 	if user.IsRegistered == false {
 		var inputUser biketrackserver.UserUpdateInput
 		strCode := strconv.Itoa(code)
-		*inputUser.Password = generatePasswordHash(strCode)
+		passwordHash := generatePasswordHash(strCode)
+		*inputUser.Password = passwordHash
 		*inputUser.ConfirmCode = code
 		*inputUser.Email = email
 		return 0, s.repos.Update(user.Id, inputUser)
