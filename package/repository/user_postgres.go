@@ -53,7 +53,7 @@ func (r *UserPostgres) GetIdByEmail(email string) (int, error) {
 
 func (r *UserPostgres) GetUserByEmail(email string) (biketrackserver.User, error) {
 	var user biketrackserver.User
-	query := fmt.Sprintf("SELECT * FROM %s WHERE email=$1", usersTable)
+	query := fmt.Sprintf("SELECT id, registered FROM %s WHERE email=$1", usersTable)
 	err := r.db.Get(&user, query, email)
 
 	return user, err
