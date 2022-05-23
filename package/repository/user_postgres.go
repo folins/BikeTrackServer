@@ -115,6 +115,7 @@ func (r *UserPostgres) Update(userId int, input biketrackserver.UserUpdateInput)
 	args = append(args, userId)
 
 	logrus.Debugf("SetQuery: %s", setQuery)
+	logrus.Debugf("args: %s", args)
 
 	_, err := r.db.Exec(query, args...)
 	return err
