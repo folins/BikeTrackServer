@@ -38,7 +38,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 			points := trips.Group(":id/points")
 			{
-				points.POST("/", h.createPoint)
+				points.POST("/", h.createPointsList)
 				points.GET("/", h.getAllPoints)
 				points.GET("/:point_id", h.getPointById)
 			}
