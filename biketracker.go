@@ -5,7 +5,7 @@ import (
 )
 
 type BikeTrip struct {
-	Id int    `json:"-" db:"id"`
+	Id int    `json:"id" db:"id"`
     DateStart time.Time `json:"date_start" db:"date_start"`
     DateEnd time.Time `json:"date_end" db:"date_end"`
     ActiveDuration int64 `json:"active_duration" db:"active_duration"`

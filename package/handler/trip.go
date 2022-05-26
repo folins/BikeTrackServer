@@ -32,7 +32,7 @@ func (h *Handler) createTrip(c *gin.Context) {
 }
 
 type getAllTripsResponse struct {
-	Data []biketrackserver.BikeTrip `json:"data"`
+	Data []biketrackserver.BikeTrip `json:"trips"`
 }
 
 func (h *Handler) getAllTrips(c *gin.Context) {
